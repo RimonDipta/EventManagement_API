@@ -1,94 +1,129 @@
-# 🎟️ Event Management Backend API
+# 🎟️ Event Management API (Node.js + Express + MongoDB)
 
-A backend REST API built with **Node.js**, **Express**, and **MongoDB** for managing events.  
-Currently supports **User Authentication** (Register, Login, Logout, Update Profile) and will be extended with event-related features.
+A backend API for managing **users** and **events** with authentication & authorization.  
+Built with **Express, MongoDB, JWT, and Cookies**.
 
 ---
 
 ## 🚀 Features
 
-- User Authentication
-  - Register new users
-  - Login with JWT & cookies
-  - Secure Logout
-  - Update user profile
-- JWT-based authentication
-- Cookie-based session management
-- Security middlewares (Helmet, HPP, Rate Limiting, Mongo Sanitize, CORS)
+### 🔑 User Authentication
+
+- User Registration (name, email, password, phone number)
+- User Login (JWT + HTTP-only cookies)
+- Get Logged-in User Profile
+- Update User Profile (name, phone, password, etc.)
+- Logout (clears auth cookie)
+
+### 🎫 Event Management
+
+- Create Event (only authenticated users)
+- Get All Events
+- Get Event by ID
+- Update Event (only creator can edit)
+- Delete Event (only creator can delete)
+
+### 🔒 Security
+
+- Passwords hashed with **bcrypt**
+- JWT stored in **HTTP-only cookies**
+- Security middlewares: `helmet`, `hpp`, `express-mongo-sanitize`
+- Rate limiting to prevent abuse
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Node.js** + **Express.js**
-- **MongoDB** + **Mongoose**
+- **Node.js**
+- **Express.js**
+- **MongoDB** + Mongoose
 - **JWT** for authentication
 - **bcrypt** for password hashing
-- **dotenv** for environment configuration
+- **cookie-parser** for cookie handling
 
 ---
 
-## ⚙️ Installation & Setup
+## 📂 Project Structure
 
-1. Clone the repository:
+├── index.js\
+├── app.js\
+├── src\
+│ ├── controllers\
+│ │ ├── userController.js\
+│ │ └── eventController.js\
+│ ├── middleware\
+│ │ └── authMiddleware.js\
+│ ├── models\
+│ │ ├── User.js\
+│ │ └── Event.js\
+│ ├── routes\
+│ │ └── api.js\
+│ └── utils\
+│ └── tokenHelper.js\
+└── package.json
+
+---
+
+## ⚡ Installation & Setup
+
+1. **Clone the repo**
    ```bash
-   git clone https://github.com/your-username/event-management.git
-   cd event-management
+   git clone https://github.com/RimonDipta/EventManagement_API.git
+   cd event-management-api
    ```
-2. Install dependencies:
+2. **Install dependencies**
+
    ```bash
    npm install
    ```
-3. Create a .env file in the root and add the following:
 
-   ```env
-   PORT=5000
-   MONGO_URI=mongodb://localhost:27017/event_api
-   JWT_SECRET=SuperSecretKey
-   JWT_Expire_Time=30d
-   Cookie_Expire_time=2592000000
-
-   ```
-
-4. Start the server:
+3. Create .env file in the root:
    ```bash
-    npx nodemon index
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_secret_key
+   JWT_Expire_Time=1d
+   Cookie_Expire_time=86400000
    ```
+4. Run serve
+   ```bash
+   npm start
+   ```
+   Server will run on 👉 http://localhost:5000
+
+---
 
 ## 📡 API Endpoints
 
-### Auth Routes
+### 🔑 Auth Routes
 
-| Method | Endpoint           | Description                | Protected |
-| ------ | ------------------ | -------------------------- | --------- |
-| POST   | `/api/v1/register` | Register a new user        | ❌        |
-| POST   | `/api/v1/login`    | Login and get token        | ❌        |
-| GET    | `/api/v1/logout`   | Logout and clear cookie    | ✅        |
-| GET    | `/api/v1/user`     | Get Logged-in user profile | ✅        |
-| PUT    | `/api/v1/update`   | Update user profile        | ✅        |
+| Method | Endpoint         | Description             | Protected |
+| ------ | ---------------- | ----------------------- | --------- |
+| POST   | /api/v1/register | Register new user       | ❌        |
+| POST   | /api/v1/login    | Login user + set cookie | ❌        |
+| GET    | /api/v1/user     | Get user profile        | ✅        |
+| PUT    | /api/v1/update   | Update profile          | ✅        |
+| GET    | /api/v1/logout   | Logout (clear cookie)   | ✅        |
 
-> ✅ = Requires authentication
+### 🎫 Event Routes
 
----
+| Method | Endpoint             | Description                 | Protected |
+| ------ | -------------------- | --------------------------- | --------- |
+| POST   | /api/v1/create-event | Create new event            | ✅        |
+| GET    | /api/v1/events       | Get all events              | ✅        |
+| GET    | /api/v1/event/:id    | Get event by ID             | ✅        |
+| PUT    | /api/v1/event/:id    | Update event (only creator) | ✅        |
+| DELETE | /api/v1/event/:id    | Delete event (only creator) | ✅        |
 
-## 🔒 Security
-
-- Passwords are hashed using **bcrypt** before saving.
-- JWT tokens stored in **HTTP-only cookies**.
-- **Helmet, Rate Limiter, HPP, CORS, Mongo Sanitize** added for enhanced security.
-
----
-
-## 📌 Roadmap
-
-- [x] User Authentication
-- [ ] Event CRUD (Create, Read, Update, Delete)
-- [ ] Event Registration & Attendance
-- [ ] Role-based access (Admin/User)
-- [ ] Testing & Documentation
+✅ = Requires login (JWT cookie)
 
 ---
 
-## 👨‍💻 Author
+## 🧪 Testing with Postman
 
-Built by **[Rimon Dipta]**
+1. **Register** → `POST /api/v1/register`
+2. **Login** → `POST /api/v1/login` (cookie will be set)
+3. Use other routes → Postman will automatically send the cookie
+4. Try creating, updating, and deleting events
+
+---

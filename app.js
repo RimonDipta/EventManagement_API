@@ -23,7 +23,7 @@ app.use(hpp());
 app.use(mongoSanitize());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb" }));
-app.use(limiter);
+//app.use(limiter);
 
 mongoose
   .connect(process.env.MONGO_URI, { autoIndex: true })
